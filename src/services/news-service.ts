@@ -2,8 +2,8 @@ import prisma from "../database";
 import * as newsRepository from "../repositories/news-repository";
 import { AlterNewsData, CreateNewsData } from "../repositories/news-repository";
 
-export async function getNews() {
-  return newsRepository.getNews();
+export async function getNews(page: number, order: string, title: string) {
+  return newsRepository.getNews(page, order, title);
 }
 
 export async function getSpecificNews(id: number) {
@@ -36,7 +36,6 @@ export async function deleteNews(id: number) {
 }
 
 async function validate(newsData: CreateNewsData, isNew = true) {
-  console.log(newsData)
   // validate if news with specific text already exists
   if (isNew) {
     const newsWithTitle = await prisma.news.findFirst({

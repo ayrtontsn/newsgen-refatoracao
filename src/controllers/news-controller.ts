@@ -6,7 +6,16 @@ import * as service from "./../services/news-service";
 import { AlterNewsData, CreateNewsData } from "../repositories/news-repository";
 
 export async function getNews(req: Request, res: Response) {
-  const news = await service.getNews();
+  const page = Number(req.query.page) || 1;
+  const order = String(req.query.order);
+  const title = req.query.title ? String(req.query.title) : undefined;  // Se não houver title, não filtrar
+
+
+  if(page<0 || !(page%2===0 || page%2===1)){
+    return res.sendStatus(httpStatus.BAD_REQUEST);
+  }
+
+  const news = await service.getNews(page, order, title);
   return res.send(news);
 }
 
