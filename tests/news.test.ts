@@ -34,6 +34,81 @@ describe("GET /news", () => {
     ]))
   });
 
+  it("should get firsts 10 news registered", async () => {
+    for(let qtdNews=0; qtdNews<15; qtdNews++){
+      await persistNewRandomNews();
+    }
+
+    const result = await api.get("/news/?order=asc");
+    const news = result.body;
+    expect(news).toHaveLength(10);
+    expect(news).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        id: expect.any(Number),
+        author: expect.any(String),
+        firstHand: expect.any(Boolean),
+        publicationDate: expect.any(String),
+        title: expect.any(String),
+        text: expect.any(String)
+      })
+    ]))
+    for (let i = 0; i < news.length - 1; i++) {
+      const currentDate = new Date(news[i].publicationDate).getTime();
+      const nextDate = new Date(news[i + 1].publicationDate).getTime();
+      expect(currentDate).toBeLessThanOrEqual(nextDate);
+    }
+  });
+
+  it("should get lasts 5 news registered", async () => {
+    for(let qtdNews=0; qtdNews<15; qtdNews++){
+      await persistNewRandomNews();
+    }
+
+    const result = await api.get("/news/?order=asc&page=2");
+    const news = result.body;
+    expect(news).toHaveLength(5);
+    expect(news).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        id: expect.any(Number),
+        author: expect.any(String),
+        firstHand: expect.any(Boolean),
+        publicationDate: expect.any(String),
+        title: expect.any(String),
+        text: expect.any(String)
+      })
+    ]))
+    for (let i = 0; i < news.length - 1; i++) {
+      const currentDate = new Date(news[i].publicationDate).getTime();
+      const nextDate = new Date(news[i + 1].publicationDate).getTime();
+      expect(currentDate).toBeLessThanOrEqual(nextDate);
+    }
+  });
+
+  it("should get 10 firsts news registered with contais `the` in the title", async () => {
+    for(let qtdNews=0; qtdNews<10; qtdNews++){
+      await persistNewRandomNews();
+    }
+
+    const result = await api.get("/news/?order=asc&page=1");
+    const news = result.body;
+    expect(news.length).toBeLessThanOrEqual(10);
+    expect(news).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        id: expect.any(Number),
+        author: expect.any(String),
+        firstHand: expect.any(Boolean),
+        publicationDate: expect.any(String),
+        title: expect.any(String),
+        text: expect.any(String)
+      })
+    ]))
+    for (let i = 0; i < news.length - 1; i++) {
+      const currentDate = new Date(news[i].publicationDate).getTime();
+      const nextDate = new Date(news[i + 1].publicationDate).getTime();
+      expect(currentDate).toBeLessThanOrEqual(nextDate);
+    }
+  });
+
   it("should get a specific id by id", async () => {
     const news = await persistNewRandomNews();
     const { status, body } = await api.get(`/news/${news.id}`);
