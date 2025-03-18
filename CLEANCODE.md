@@ -1,10 +1,11 @@
 # arquivo: news-controller.ts
+- if (isNaN(id) || id <= 0) <Ln 15, 32,44> -> (DRY)
+
 - return res.status(httpStatus.BAD_REQUEST).send("Id is not valid."); <Ln 16, 33, 45> -> Magic String (Semântica)
 
 # arquivo: error-handler.ts
 - errorHandlingMiddleware() -> Complexidade de lógica booleana.
 
-- if (isNaN(id) || id <= 0) <Ln 15, 32,44> -> (DRY)
 # arquivo: news-repositories.ts
 - getNoticias() -> mistura português e inglês (Nomeação)
 - getNoticiaById() -> mistura português e inglês (Nomeação)
